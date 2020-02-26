@@ -13,100 +13,107 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
-const isEnvProduction = process.env.NODE_ENV === "production";
-const isEnvDevelopment = process.env.NODE_ENV === "development";
+module.exports = webpackEnv => {
+  const isEnvDevelopment =
+    process.env.NODE_ENV === "development" || webpackEnv === "development";
+  const isEnvProduction =
+    process.env.NODE_ENV === "production" || webpackEnv === "production";
 
-module.exports = {
-  mode: isEnvProduction ? "production" : "development",
+  console.log({ isEnvProduction }, { isEnvDevelopment });
 
-  entry: {
-    main: path.join(__dirname, "src", "index.js")
-  },
+  return {
+    mode: isEnvProduction ? "production" : "development",
+    bail: isEnvProduction,
 
-  output: {
-    path: path.join(__dirname, "dist"),
-    filename: isEnvProduction ? "[name].[hash:5].js" : "[name].js",
-    chunkFilename: isEnvProduction ? "[id].[hash:5].css" : "[id].css"
-  },
+    entry: {
+      main: path.join(__dirname, "src", "index.js")
+    },
 
-  module: {
-    rules: [
-      {
-        test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader?name=/[hash].[ext]"
-      },
+    output: {
+      path: path.join(__dirname, "dist"),
+      filename: isEnvProduction ? "[name].[hash:5].js" : "[name].js",
+      chunkFilename: isEnvProduction ? "[id].[hash:5].css" : "[id].css"
+    },
 
-      { test: /\.json$/, loader: "json-loader" },
+    module: {
+      rules: [
+        {
+          test: /\.((png)|(eot)|(woff)|(woff2)|(ttf)|(svg)|(gif))(\?v=\d+\.\d+\.\d+)?$/,
+          loader: "file-loader?name=/[hash].[ext]"
+        },
 
-      {
-        loader: "babel-loader",
-        test: /\.js?$/,
-        exclude: /node_modules/,
-        query: { cacheDirectory: true }
-      },
+        { test: /\.json$/, loader: "json-loader" },
 
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: [
-          "style-loader",
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader"
-        ]
-      }
-    ]
-  },
+        {
+          loader: "babel-loader",
+          test: /\.js?$/,
+          exclude: /node_modules/,
+          query: { cacheDirectory: true }
+        },
 
-  plugins: [
-    new ProvidePlugin({
-      fetch:
-        "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
-    }),
+        {
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: [
+            "style-loader",
+            MiniCssExtractPlugin.loader,
+            "css-loader",
+            "postcss-loader"
+          ]
+        }
+      ]
+    },
 
-    new AssetsPlugin({
-      filename: "webpack.json",
-      path: path.join(process.cwd(), "site/data"),
-      prettyPrint: true
-    }),
-
-    new CopyWebpackPlugin([
-      {
-        from: "./src/fonts/",
-        to: "fonts/",
-        flatten: true
-      }
-    ]),
-    isEnvDevelopment &&
-      new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: [
-          "dist/**/*.js",
-          "dist/**/*.css",
-          "site/content/webpack.json"
-        ]
+    plugins: [
+      new ProvidePlugin({
+        fetch:
+          "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
       }),
 
-    isEnvDevelopment &&
-      new MiniCssExtractPlugin({
-        filename: "[name].css",
-        chunkFilename: "[id].css"
-      })
-  ],
-  optimization: {
-    minimize: isEnvProduction,
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true
+      new AssetsPlugin({
+        filename: "webpack.json",
+        path: path.join(process.cwd(), "site/data"),
+        prettyPrint: true
       }),
 
-      new MiniCssExtractPlugin({
-        filename: "[name].[hash:5].css",
-        chunkFilename: "[id].[hash:5].css"
-      }),
+      new CopyWebpackPlugin([
+        {
+          from: "./src/fonts/",
+          to: "fonts/",
+          flatten: true
+        }
+      ]),
+      isEnvDevelopment &&
+        new CleanWebpackPlugin({
+          cleanOnceBeforeBuildPatterns: [
+            "dist/**/*.js",
+            "dist/**/*.css",
+            "site/content/webpack.json"
+          ]
+        }),
 
-      new OptimizeCSSAssetsPlugin({})
-    ]
-  }
+      isEnvDevelopment &&
+        new MiniCssExtractPlugin({
+          filename: "[name].css",
+          chunkFilename: "[id].css"
+        })
+    ].filter(Boolean),
+    optimization: {
+      minimize: isEnvProduction,
+      minimizer: [
+        new UglifyJsPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true
+        }),
+
+        new MiniCssExtractPlugin({
+          filename: "[name].[hash:5].css",
+          chunkFilename: "[id].[hash:5].css"
+        }),
+
+        new OptimizeCSSAssetsPlugin({})
+      ]
+    }
+  };
 };
