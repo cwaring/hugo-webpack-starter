@@ -64,6 +64,19 @@ module.exports = webpackEnv => {
       ],
     },
 
+    devServer: isEnvDevelopment
+      ? {
+          port: process.env.PORT || 3000,
+          contentBase: path.join(process.cwd(), './dist'),
+          watchContentBase: true,
+          quiet: false,
+          open: true,
+          historyApiFallback: {
+            rewrites: [{ from: /./, to: '404.html' }],
+          },
+        }
+      : undefined,
+
     plugins: [
       new ProvidePlugin({
         fetch:
