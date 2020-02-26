@@ -1,2 +1,6 @@
 node_modules
 package-lock.json
+# ignoring auto html formatting until there is a solution
+# for using gohtml templates with prettier
+# https://github.com/prettier/prettier/issues/6034
+site/**/*.html

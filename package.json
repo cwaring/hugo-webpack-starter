@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "prettier --write \"**/*.{html,json,yaml,md}\" && run-p lint:**",
+    "lint": "prettier --write \"**/*.{json,yaml,md}\" && run-p lint:**",
     "lint:eslint": "eslint src --fix",
     "lint:styles": "stylelint src/**/*.css --fix",
     "start": "run-p start:**",
@@ -96,6 +96,6 @@
   "lint-staged": {
     "*.js": "eslint --fix",
     "*.css": "stylelint --fix",
-    "*.{html,json,yaml,md}": "prettier --write"
+    "*.{json,yaml,md}": "prettier --write"
   }
 }
