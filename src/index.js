@@ -1,2 +1,2 @@
-import "./css/main.css";
-console.log("src/index.js");
+import './css/main.css'
+console.log('src/index.js')
