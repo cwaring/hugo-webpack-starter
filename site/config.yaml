@@ -1,0 +1,5 @@
+baseURL: '/'
+languageCode: 'en-us'
+languageLang: 'en'
+relativeURLs: true
+title: 'My New Hugo Site'
