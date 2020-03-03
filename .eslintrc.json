@@ -4,8 +4,7 @@
     "es6": true
   },
   "parser": "babel-eslint",
-  "extends": ["standard", "prettier", "prettier/standard"],
-  "plugins": ["import", "prettier", "standard"],
+  "extends": ["standard", "plugin:prettier/recommended", "prettier/standard"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -13,8 +12,5 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module"
-  },
-  "rules": {
-    "prettier/prettier": "error"
   }
 }
